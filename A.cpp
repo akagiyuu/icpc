@@ -64,7 +64,7 @@ void solve() {
             int x, y, z;
             ll w;
             cin >> x >> y >> z >> w;
-            update(x, y, z, w);
+            update(x, y, z, w - query(x, y, z, x, y, z));
         } else {
             int x1, y1, z1, x2, y2, z2;
             cin >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
