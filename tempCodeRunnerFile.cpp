@@ -49,7 +49,7 @@ final answer = value1 - value2
 
 ll query(int x1, int y1, int z1, int x2, int y2, int z2) {
     ll value1 = query(x2, y2, z2) - query(x1 - 1, y2, z2) - query(x2, y1 - 1, z2) + query(x1 - 1, y1 - 1, z2);
-    ll value2 = query(x2, y2, z1 -1) - query(x1 - 1, y2, z1 - 1) - query(x2, y1 - 1, z1 - 1) + query(x1 - 1, y1 - 1, z1 - 1);
+    ll value2 = query(x2, y2, z1 - -1) - query(x1 - 1, y2, z1 - 1) - query(x2, y1 - 1, z1 - 1) + query(x1 - 1, y1 - 1, z1 - 1);
     return value1 - value2;
 }
 
