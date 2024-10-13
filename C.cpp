@@ -31,24 +31,27 @@ int main() {
     vector<int> vst(n + 1, false);
     
     ll total_cost = 0;
-    for (int i = 1; i <= n; ++i) {
-        if (!vst[i]) {
-            int cur = i;
-            int cycle_size = 0;
-            ll cost = 0;
-            ll min_cost = LLONG_MAX;
-            while (!vst[cur]) {
-                vst[cur] = true;
-                cost += w[origin[cur]];
-                min_cost = min(min_cost, (ll) w[origin[cur]]);
-                cur = pos[origin[cur]];
-                cycle_size++;
-            }   
+    int min_cost = *min_element(w + 1, w + n + 1);
 
-            if (cycle_size > 1) {
-                total_cost += cost + (cycle_size - 2) * min_cost;
-            }
+    for (int i = 1; i <= n; ++i) {
+        if (origin[i] == required[i] || vst[i]) continue;
+
+        int cur = i;
+        int cycle_size = 0;
+        ll cycle_min = LLONG_MAX;
+        ll cycle_sum = 0;
+
+        while (!vst[cur]) {
+            vst[cur] = true;
+            int color = origin[cur];
+            cycle_min = min(cycle_min, (ll) w[color]);
+            cycle_sum += w[color];
+            cycle_size++;
+            cur = pos[color];
         }
+
+        total_cost += min(cycle_sum + (cycle_size - 2) * cycle_min, 
+                          cycle_sum + cycle_min + (cycle_size + 1) * min_cost);
     }
 
     cout << total_cost;
