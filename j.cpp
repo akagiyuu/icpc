@@ -4,11 +4,6 @@
 
 using namespace std;
 
-bool is_beautiful(vector<int> &freq_left, vector<int> &freq_right,
-		  vector<bool> &should_check)
-{
-}
-
 int decode(char c)
 {
 	if ('a' <= c && c <= 'z') {
@@ -52,16 +47,21 @@ int main()
 
 	int count = 0;
 	for (int i = 0; i < n - check_count + 1; i++) {
-		for (int j = n - 1; j >= i + check_count - 1; j--) {
+        bool quit = false;
+		for (int j = n - 1; j >= i + check_count - 1 && !quit; j--) {
 			auto freq_left = i == 0 ? zero : prefix_freq[i - 1];
 			auto freq_right = prefix_freq[j];
 			int cur_freq = 0;
+
+			bool is_beautiful = true;
 			for (int i = 0; i < 52; i++) {
 				if (!should_check[i]) {
 					continue;
 				}
 				int value = freq_right[i] - freq_left[i];
 				if (value == 0) {
+                    is_beautiful = false;
+                    quit = true;
                     break;
 				}
 				if (cur_freq == 0) {
@@ -69,10 +69,13 @@ int main()
 				}
 
 				if (value != cur_freq) {
-					return false;
+					is_beautiful = false;
+					break;
 				}
 			}
-			return true;
+			if (is_beautiful) {
+				count += 1;
+			}
 		}
 	}
 	cout << count;
