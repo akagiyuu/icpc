@@ -16,7 +16,7 @@ const int N = 205;
 int n, m;
 ll grid[N][N][N];
 
-void update(int x, int y, int z, int w) {
+void update(int x, int y, int z, ll w) {
     for (int i = x; i <= n; i += i & (-i)) {
         for (int j = y; j <= n; j += j & (-j)) {
             for (int k = z; k <= n; k += k & (-k)) {
@@ -52,7 +52,8 @@ void solve() {
         string type;
         cin >> type;
         if (type == "UPDATE") {
-            int x, y, z, w;
+            int x, y, z;
+            ll w;
             cin >> x >> y >> z >> w;
             update(x, y, z, w);
         } else {
