@@ -1,50 +1,64 @@
+#pragma GCC optimize(3)
+#pragma GCC optimize("inline")
+#pragma GCC optimize("-fgcse")
+#pragma GCC target("avx","sse2")
+#pragma GCC optimize("-fgcse-lm")
+#pragma GCC optimize("-fipa-sra")
+#pragma GCC optimize("-ftree-pre")
+#pragma GCC optimize("-ftree-vrp")
+#pragma GCC optimize("-fpeephole2")
+#pragma GCC optimize("-ffast-math")
+#pragma GCC optimize("-fsched-spec")
+#pragma GCC optimize("unroll-loops")
+
 #include <iostream>
 #include <vector>
-#include <algorithm>
 using namespace std;
 
 const int ALPHABET_SIZE = 52;
 
-inline int getIndex(char ch) {
-    return (ch >= 'a') ? (ch - 'a') : (ch - 'A' + 26);
+int getIndex(char ch) {
+    if (ch >= 'a' && ch <= 'z') return ch - 'a';
+    return ch - 'A' + 26;
 }
 
-int countBeautifulSubstrings(const string& s) {
-    int n = s.length();
-    vector<int> freq(ALPHABET_SIZE, 0);
-    vector<int> uniqueChars;
-    int beautifulCount = 0;
-
-    for (int end = 0; end < n; ++end) {
-        int idx = getIndex(s[end]);
-        if (freq[idx] == 0) uniqueChars.push_back(idx);
-        ++freq[idx];
-
-        int targetFreq = freq[idx];
-        bool isBeautiful = true;
-
-        for (int uniqueChar : uniqueChars) {
-            if (freq[uniqueChar] != 0 && freq[uniqueChar] != targetFreq) {
-                isBeautiful = false;
-                break;
+bool isBeautiful(const vector<int>& freq, int unique_count) {
+    int count = -1; 
+    int t = 0;
+    for (int f : freq) {
+        if (f > 0) {
+            if (count == -1) count = f, t++;
+            else {
+                if (count != f) return false;
+                if (count == f) t++;
             }
         }
+    }
+    return (t == unique_count);
+}
 
-        if (isBeautiful) ++beautifulCount;
+int countBeautifulSubstrings(const string& s, int n) {
+    vector<vector<int>> dp(n + 1, vector<int>(ALPHABET_SIZE, 0));  
+    int beautifulCount = 0;
+    int uniqueCount = 0;
 
-        for (int start = 0; start < end; ++start) {
-            idx = getIndex(s[start]);
-            --freq[idx];
+    for (int i = 0; i < n; i++) {
+        dp[i + 1] = dp[i];
+        if (dp[i + 1][getIndex(s[i])] == 0) uniqueCount++;
+        dp[i + 1][getIndex(s[i])]++; 
+    }
 
-            isBeautiful = true;
-            for (int uniqueChar : uniqueChars) {
-                if (freq[uniqueChar] != 0 && freq[uniqueChar] != targetFreq) {
-                    isBeautiful = false;
-                    break;
-                }
+    for (int start = 0; start < n; start++) {
+        for (int end = start; end < n; end++) {
+            vector<int> freq(ALPHABET_SIZE, 0);
+
+            for (int c = 0; c < ALPHABET_SIZE; c++) {
+                freq[c] = dp[end + 1][c] - dp[start][c];
             }
 
-            if (isBeautiful) ++beautifulCount;
+            if (isBeautiful(freq, uniqueCount)) {
+                beautifulCount++;
+            }
         }
     }
 
@@ -53,12 +67,13 @@ int countBeautifulSubstrings(const string& s) {
 
 int main() {
     ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
+    cin.tie(NULL);
+    cout.tie(NULL);
     int n;
     string s;
-    cin >> n >> s;
+    cin >> n;
+    cin >> s;
 
-    cout << countBeautifulSubstrings(s) << endl;
+    cout << countBeautifulSubstrings(s, n) << endl;
     return 0;
 }
