@@ -14,15 +14,14 @@ const int MOD = 1e9 + 7;
 const int N = 1e5 + 5;
 
 vector<int> adj[N];
-unordered_set<int> f[N];
+int in_time[N], out_time[N], timer = 0;
 
-unordered_set<int> dfs(int u) {
-    f[u].insert(u);
+void dfs(int u) {
+    in_time[u] = ++timer;
     for (auto v : adj[u]) {
-        auto tmp = dfs(v);
-        f[u].insert(tmp.begin(), tmp.end());
+        dfs(v);
     }
-    return f[u];
+    out_time[u] = ++timer;
 }
 
 int main() {
@@ -44,19 +43,12 @@ int main() {
     int root = *tmp.begin();
     dfs(root);
 
-    // for (int i = 1; i <= n; ++i) {
-    //     cout << i << ": ";
-    //     for (auto j : f[i]) cout << j << ' ';
-    //     cout << endl;
-    // }
-
     int t = 1;
     cin >> t;
     while(t--) {
         int u, v;
         cin >> u >> v;
-        // for (auto x : f[u]) cout << x << ' ';
-        if (f[u].find(v) != f[u].end()) {
+        if (in_time[u] <= in_time[v] && out_time[u] >= out_time[v]) {
             cout << "Yes\n";
         } else {
             cout << "No\n";
