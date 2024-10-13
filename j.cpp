@@ -4,6 +4,8 @@
 
 using namespace std;
 
+int MOD = 1000000007;
+
 int decode(char c)
 {
 	if ('a' <= c && c <= 'z') {
@@ -74,7 +76,7 @@ int main()
 				}
 			}
 			if (is_beautiful) {
-				count += 1;
+				count  = (count + 1) % MOD;
 			}
 		}
 	}
